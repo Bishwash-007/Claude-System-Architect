@@ -33,7 +33,8 @@ mkdir -p .claude/skills/express-lld-architect
 Copy the skill files:
 
 ```bash
-cp -R express-lld-architect/* .claude/skills/express-lld-architect/
+cp -R claude-skills/express-typescript/express-lld-architect/* \
+.claude/skills/express-lld-architect/
 ```
 
 Project structure:
@@ -44,7 +45,7 @@ my-project/
 │   └── skills/
 │       └── express-lld-architect/
 │           ├── SKILL.md
-│           ├── index.md
+│           ├── README.md
 │           └── ...
 ├── src/
 └── package.json
@@ -63,7 +64,9 @@ mkdir -p ~/.claude/skills
 Copy the skill:
 
 ```bash
-cp -R express-lld-architect ~/.claude/skills/
+cp -R \
+claude-skills/express-typescript/express-lld-architect \
+~/.claude/skills/
 ```
 
 Result:
@@ -83,18 +86,28 @@ The skill will now be available across all Claude Code projects.
 
 # Installation from GitHub
 
-Clone directly into your Claude skills directory:
+Clone the repository:
 
 ```bash
-git clone https://github.com/your-org/express-lld-architect.git \
-~/.claude/skills/express-lld-architect
+git clone https://github.com/Bishwash-007/Claude-System-Architect.git
 ```
 
-Or for a single project:
+Install globally:
 
 ```bash
-git clone https://github.com/your-org/express-lld-architect.git \
-.claude/skills/express-lld-architect
+cp -R \
+claude-skills/express-typescript/express-lld-architect \
+~/.claude/skills/
+```
+
+Or install into a specific project:
+
+```bash
+mkdir -p .claude/skills/express-lld-architect
+
+cp -R \
+claude-skills/express-typescript/express-lld-architect/* \
+.claude/skills/express-lld-architect/
 ```
 
 ---
@@ -126,18 +139,27 @@ If installed correctly, Claude Code should recognize and load the skill.
 
 # Updating
 
-If installed via Git:
+If installed from the repository:
 
 ```bash
-cd ~/.claude/skills/express-lld-architect
+cd claude-skills
 git pull
+```
+
+Reinstall the latest version:
+
+```bash
+cp -R \
+express-typescript/express-lld-architect \
+~/.claude/skills/
 ```
 
 For project-local installations:
 
 ```bash
-cd .claude/skills/express-lld-architect
-git pull
+cp -R \
+express-typescript/express-lld-architect/* \
+your-project/.claude/skills/express-lld-architect/
 ```
 
 ---
@@ -160,16 +182,20 @@ rm -rf .claude/skills/express-lld-architect
 
 # Local Development
 
-Make changes to the skill files:
+Repository structure:
 
 ```text
-express-lld-architect/
-├── SKILL.md
-├── README.md
-├── docs/
-├── templates/
-└── examples/
+claude-skills/
+└── express-typescript/
+    └── express-lld-architect/
+        ├── SKILL.md
+        ├── README.md
+        ├── docs/
+        ├── templates/
+        └── examples/
 ```
+
+Make changes to the skill files and reinstall if necessary.
 
 Restart Claude Code after modifying the skill:
 
@@ -177,7 +203,7 @@ Restart Claude Code after modifying the skill:
 claude
 ```
 
-or restart the current Claude session.
+or start a new session.
 
 ---
 
@@ -219,28 +245,6 @@ Run the skill:
 /express-lld-architect
 ```
 
-Example usage:
-
-```text
-Design a backend for an e-commerce platform.
-```
-
-```text
-Create a scalable notification service.
-```
-
-```text
-Generate a TypeScript Express architecture for a booking system.
-```
-
-```text
-Design a payment processing backend.
-```
-
-```text
-Create an API architecture for a chat application.
-```
-
 ---
 
 # Packaging for Distribution
@@ -248,7 +252,11 @@ Create an API architecture for a chat application.
 Create a release archive:
 
 ```bash
-zip -r express-lld-architect.zip express-lld-architect
+cd express-typescript
+
+zip -r \
+express-lld-architect.zip \
+express-lld-architect
 ```
 
 Verify contents:
@@ -312,7 +320,7 @@ Ensure:
 SKILL.md
 ```
 
-exists at the root of the skill directory.
+exists at the root of the installed skill directory.
 
 ---
 
@@ -333,20 +341,22 @@ or start a new session.
 Correct:
 
 ```text
-express-lld-architect/
-├── SKILL.md
-└── README.md
+~/.claude/skills/
+└── express-lld-architect/
+    ├── SKILL.md
+    └── README.md
 ```
 
 Incorrect:
 
 ```text
-express-lld-architect/
-└── nested/
-    └── SKILL.md
+~/.claude/skills/
+└── express-lld-architect/
+    └── nested/
+        └── SKILL.md
 ```
 
-The `SKILL.md` file must be located at the root of the skill directory.
+The `SKILL.md` file must be located at the root of the installed skill directory.
 
 ---
 
