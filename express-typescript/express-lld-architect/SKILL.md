@@ -1,166 +1,136 @@
 ---
-name: typescript-backend-architect
-description: This skill provides comprehensive guidance for designing and implementing low-level system components using design patterns, SOLID principles, and best practices in Express.js with TypeScript. Use when designing system components, implementing design patterns, applying SOLID principles, architecting database interactions, creating scalable services, or refactoring code for better structure and maintainability.
+name: express-lld-architect
+description: >
+  Expert low-level design (LLD) guidance for Express.js + TypeScript systems.
+  Use this skill whenever the user is designing, architecting, or refactoring
+  backend code — even if they don't use the words "design pattern" or "SOLID".
+  Triggers include: "how should I structure this service", "I need a clean way
+  to handle X", "refactor this code", "design a payment/notification/auth
+  system", "what pattern fits here", "make this more testable/scalable",
+  "implement repository/service/factory/observer/strategy/state/decorator/
+  proxy/command/builder/adapter pattern", "dependency injection", "UML diagram",
+  "class diagram", "OOP design", or any request to architect a new Express
+  route, controller, service, or data-access layer. Always use this skill
+  before writing non-trivial TypeScript backend code.
 ---
 
-# Low-Level Design (LLD) Skill
+# Express LLD Architect
 
-## Purpose
+Comprehensive low-level design guidance for Express.js + TypeScript —
+from pattern selection through production-ready implementation.
 
-This skill enables Claude to assist with low-level design tasks—taking a system requirement and decomposing it into well-architected, maintainable code using proven patterns and principles. It covers design patterns (creational, structural, behavioral), SOLID principles, object-oriented design concepts, and practical implementation patterns for building production-grade systems in Express.js with TypeScript.
+## Quick Navigation
 
-## When to Use This Skill
+| Task | Go to |
+|------|-------|
+| Pick a design pattern | [Pattern Selection](#pattern-selection) |
+| Apply SOLID principles | [SOLID Quick Ref](#solid-quick-reference) |
+| Scaffold a new service | `assets/express-service-template.ts` |
+| See pattern code | `assets/design-patterns-examples.ts` |
+| Deep-dive any pattern | `references/design-patterns-guide.md` |
+| Deep-dive SOLID | `references/solid-principles-guide.md` |
+| OOP fundamentals | `references/oops-concepts.md` |
+| Draw a UML diagram | `references/uml-diagrams.md` |
 
-Use this skill when:
+---
 
-- Designing individual services, components, or modules from scratch
-- Selecting and implementing appropriate design patterns for a problem
-- Refactoring existing code to follow SOLID principles or design patterns
-- Architecting database interactions, repositories, and data access layers
-- Creating dependency injection, factory, or builder patterns
-- Designing notification systems, event handlers, or state machines
-- Structuring request/response handlers in Express.js
-- Building scalable and testable code architecture
-- Creating domain models and entities for business logic
-- Implementing caching strategies, proxies, or decorators
+## Workflow for Every Design Task
 
-## How to Use This Skill
+1. **Understand** — What behaviour must be implemented? What are the pain points?
+2. **Select patterns** — Use the table below; pick the minimum that solve the problem.
+3. **Apply SOLID** — Validate your design against all five principles.
+4. **Implement** — Use the template and examples as starting points.
+5. **Organise for Express** — Controllers → Services → Repositories.
+6. **Document trade-offs** — Explain *why* each pattern was chosen.
 
-### 1. Design Pattern Selection
+---
 
-To solve a design problem, first identify which pattern(s) apply:
+## Pattern Selection
 
-**Creational Patterns** (object creation):
+### Creational — *how objects are created*
 
-- **Factory**: When you have multiple ways to create similar objects. Use Factory Pattern for creating objects without specifying exact classes.
-- **Builder**: When objects have many optional parameters. Use Builder Pattern to construct complex objects step-by-step.
-- **Singleton**: When you need exactly one instance across the application. Use for configuration, logging, or database connections.
-- **Abstract Factory**: When you have families of related objects. Use for creating suites of related products.
-- **Prototype**: When cloning objects is cheaper than creating from scratch. Use for prototypal inheritance patterns.
+| Pattern | Use when… |
+|---------|-----------|
+| **Factory** | Multiple concrete types behind one creation call (e.g. `NotificationFactory.create('email')`) |
+| **Builder** | Many optional constructor params; fluent `.where().sort().take().build()` APIs |
+| **Singleton** | Exactly one instance needed app-wide: logger, config, DB pool |
+| **Abstract Factory** | Families of related objects that must stay consistent (e.g. UI themes, cloud providers) |
+| **Prototype** | Cloning is cheaper than re-initialising from scratch |
 
-**Structural Patterns** (object composition):
+### Structural — *how objects are composed*
 
-- **Adapter**: When integrating incompatible interfaces. Use Adapter to make old code work with new interfaces.
-- **Decorator**: When adding behavior to objects dynamically. Use for middleware, logging, or feature flags.
-- **Facade**: When simplifying complex subsystems. Use to provide simple interface to complex logic.
-- **Proxy**: When controlling access to another object. Use for lazy loading, caching, or authorization checks.
-- **Bridge**: When decoupling abstraction from implementation. Use for driver/backend flexibility.
-- **Composite**: When treating individual objects and compositions uniformly. Use for tree structures.
-- **Flyweight**: When optimizing memory with shared objects. Use for connection pooling or cached resources.
+| Pattern | Use when… |
+|---------|-----------|
+| **Adapter** | Third-party / legacy interface doesn't match yours |
+| **Decorator** | Adding behaviour at runtime without subclassing (logging, caching, auth checks) |
+| **Facade** | Hiding a complex subsystem behind a simple entry point |
+| **Proxy** | Controlling access: lazy-load, cache, auth guard |
+| **Composite** | Treating trees of objects uniformly |
+| **Bridge** | Decoupling abstraction from implementation so both can vary independently |
+| **Flyweight** | Many short-lived objects sharing immutable state (connection pools, cached configs) |
 
-**Behavioral Patterns** (object interaction):
+### Behavioural — *how objects communicate*
 
-- **Observer**: When objects need to react to state changes. Use for event-driven architecture or real-time updates.
-- **Strategy**: When swapping algorithms at runtime. Use for pluggable authentication, payment methods, or validation logic.
-- **State**: When objects behave differently in different states. Use for order processing, user workflows, or state machines.
-- **Command**: When encapsulating requests as objects. Use for queuing, undo/redo, or batch operations.
-- **Iterator**: When traversing collections without exposing structure. Use for custom data structure iteration.
-- **Template Method**: When defining algorithm skeleton in base class. Use for common workflows with customization points.
-- **Mediator**: When reducing coupling between objects. Use for complex interdependencies.
-- **Visitor**: When adding operations without modifying classes. Use for AST processing or complex object traversals.
-- **Chain of Responsibility**: When handling requests through a chain. Use for middleware, approval workflows, or logging levels.
-- **Memento**: When capturing and restoring state. Use for undo/redo functionality.
-- **Interpreter**: When parsing and executing domain languages. Use for query builders or expression evaluators.
+| Pattern | Use when… |
+|---------|-----------|
+| **Observer** | Multiple subscribers react to state changes (order placed → email + analytics + inventory) |
+| **Strategy** | Swap algorithms at runtime: payment methods, pricing tiers, validation rules |
+| **State** | Object behaviour varies by internal state: order workflow, document lifecycle |
+| **Command** | Encapsulate requests as objects for queuing, undo/redo, or audit logs |
+| **Chain of Responsibility** | Pass a request through a pipeline until one handler claims it (middleware, approval flows) |
+| **Template Method** | Common algorithm skeleton; subclasses fill in the steps |
+| **Iterator** | Traverse custom data structures without exposing internals |
+| **Mediator** | Reduce coupling in many-to-many object graphs |
+| **Visitor** | Add operations to a class hierarchy without modifying it |
+| **Memento** | Capture and restore object state (undo/redo) |
+| **Interpreter** | Parse and execute a mini-language: query builders, rule engines |
 
-### 2. Apply SOLID Principles
+---
 
-Structure all designs around SOLID:
+## SOLID Quick Reference
 
-**S - Single Responsibility Principle (SRP)**
+| Principle | One-liner | Common violation | Fix |
+|-----------|-----------|-----------------|-----|
+| **S**RP | One class, one reason to change | `UserController` also sends email and hashes passwords | Split into `UserController`, `EmailService`, `PasswordService` |
+| **O**CP | Extend without modifying | `if (type === 'visa') … else if (type === 'paypal')` | Extract `PaymentStrategy` interface; add new class per method |
+| **L**SP | Subtypes must honour their parent's contract | `Square` overrides `setWidth` to also change height | Use a shared `Shape` interface instead of `Square extends Rectangle` |
+| **I**SP | Small, focused interfaces | `Worker` forces `RobotWorker` to implement `eat()` | Split into `Workable`, `Eatable`, `Sleepable` |
+| **D**IP | Depend on abstractions, not concretions | `new MySQLDatabase()` inside `UserService` | Inject `Database` interface via constructor |
 
-- Each class/function should have one reason to change
-- Separate concerns: domain logic, persistence, presentation
+---
 
-**O - Open/Closed Principle (OCP)**
+## Express.js Architecture
 
-- Open for extension, closed for modification
-- Use abstraction and inheritance for new features without changing existing code
+All services follow this layered structure — read details in `references/` if needed:
 
-**L - Liskov Substitution Principle (LSP)**
+```
+HTTP Layer      (Routes, Controllers)   — thin; only HTTP concerns
+    ↓
+Service Layer   (Business Logic)        — pure TypeScript; no Express imports
+    ↓
+Repository Layer (Data Access)          — one interface, swap DB freely
+```
 
-- Derived classes must be substitutable for base classes
-- Ensure subtypes don't violate parent contracts
+**Key conventions:**
+- Controllers use `asyncHandler` wrapper — never raw `try/catch` per route.
+- Custom error classes (`ValidationError`, `NotFoundError`, …) flow to a single `errorHandler` middleware.
+- Use a `DIContainer` to wire repositories → services → controllers at startup.
+- DTOs shape requests in; `UserResponseDTO` shapes responses out.
 
-**I - Interface Segregation Principle (ISP)**
+---
 
-- Many client-specific interfaces better than one general-purpose
-- Create focused interfaces clients actually need
+## Reference Files
 
-**D - Dependency Inversion Principle (DIP)**
+Read these on demand — don't load all at once:
 
-- Depend on abstractions, not concrete implementations
-- Use dependency injection and interfaces for flexibility
+- **`references/design-patterns-guide.md`** — Full TypeScript examples for every pattern listed above; includes Benefits / When-to-Use / Drawbacks for each.
+- **`references/solid-principles-guide.md`** — Before/after code for every SOLID violation; combined SOLID example at the end.
+- **`references/oops-concepts.md`** — Abstraction, encapsulation, inheritance, polymorphism, composition vs. inheritance, association/aggregation/composition.
+- **`references/uml-diagrams.md`** — ASCII examples of class, sequence, state, use-case, component, activity, and deployment diagrams; when to use each.
 
-### 3. Key Design Concepts
+## Asset Files
 
-**Abstraction**: Hide implementation details behind interfaces. Use abstract classes and interfaces to define contracts.
+Use these as copy-paste starting points:
 
-**Encapsulation**: Keep data private, provide public methods for controlled access. Protects invariants and allows refactoring.
-
-**Inheritance**: Model "is-a" relationships. Use for code reuse, but prefer composition when possible.
-
-**Polymorphism**: Objects of different types respond to same interface. Enables flexible, extensible code.
-
-**Repository Pattern**: Abstract data access layer. Separate business logic from database queries for testability.
-
-**Service Layer**: Encapsulate business logic separate from controllers. Makes logic reusable and testable.
-
-**Dependency Injection**: Pass dependencies rather than creating them. Improves testability and loose coupling.
-
-### 4. Express.js Specific Patterns
-
-**Middleware Composition**: Use middleware stack for cross-cutting concerns (logging, auth, error handling).
-
-**Controller Layer**: Thin controllers that delegate to services. Controllers handle routing and HTTP details.
-
-**Request/Response DTOs**: Use Data Transfer Objects to shape incoming requests and outgoing responses.
-
-**Error Handling**: Centralized error handler middleware. Create custom error types for different scenarios.
-
-**Async/Await Pattern**: Use async handlers with try/catch for cleaner error handling.
-
-**Type Safety**: Leverage TypeScript for compile-time type checking. Use interfaces for external contracts.
-
-### 5. Implementation Process
-
-When implementing a design:
-
-1. **Identify the abstraction**: Define interfaces/abstract classes first
-2. **Implement concrete classes**: Fulfill the abstraction contracts
-3. **Inject dependencies**: Pass abstractions, not concrete implementations
-4. **Add tests**: Write tests against abstractions for flexibility
-5. **Document trade-offs**: Explain why specific patterns were chosen
-
-## References
-
-Consult the following reference materials for detailed explanations and examples:
-
-- `references/design-patterns-guide.md` - Comprehensive guide to all design patterns with use cases
-- `references/solid-principles-guide.md` - Deep dive into SOLID principles with real examples
-- `references/oops-concepts.md` - Object-oriented programming fundamentals
-- `references/uml-diagrams.md` - Visual modeling techniques for design
-
-## Assets
-
-Example TypeScript templates are available in `assets/` for common patterns and architectures:
-
-- Express.js starter project structure
-- Service layer template
-- Repository pattern template
-- Dependency injection container setup
-- Error handling middleware
-- Request validation middleware
-
-Use these templates as starting points for consistent architecture across projects.
-
-## Workflow for Design Tasks
-
-1. **Understand the requirement** - What behavior needs to be implemented?
-2. **Choose appropriate patterns** - Which patterns apply to this problem?
-3. **Design with SOLID** - How can SOLID principles improve this design?
-4. **Implement in TypeScript** - Create type-safe, expressive code
-5. **Structure for Express** - Organize with controllers, services, and repositories
-6. **Test the design** - Write tests that verify the abstraction contracts
-7. **Document rationale** - Explain why specific patterns were chosen
-
-By following these principles and patterns, create systems that are maintainable, scalable, testable, and resilient to change.
+- **`assets/express-service-template.ts`** — Production-ready scaffold: DIContainer, Repository, Service, Controller, DTOs, custom errors, middleware stack, graceful shutdown.
+- **`assets/design-patterns-examples.ts`** — Runnable TypeScript implementations of Factory, Builder, Strategy, Decorator, Observer, State, Adapter, Proxy, and Command patterns — all with validation and error handling.

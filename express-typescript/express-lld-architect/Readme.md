@@ -1,365 +1,139 @@
-# Express LLD Architect
+# express-lld-architect
 
-A Claude Code skill package.
+A Claude Code skill for low-level system design in Express.js + TypeScript.
+
+## What this skill does
+
+Guides Claude through selecting design patterns, applying SOLID principles, and
+producing production-ready Express.js service code — controllers, services,
+repositories, dependency injection, DTOs, error handling, and more.
 
 ## Requirements
 
-Before installing, ensure you have:
-
-* Claude Code installed
-* Node.js 20+ (recommended)
-* Git
-
-Verify your installation:
-
-```bash
-claude --version
-node --version
-git --version
-```
+- Claude Code installed (`npm install -g @anthropic-ai/claude-code`)
+- Node.js 20+
 
 ---
 
-# Installation
+## Installation
 
-## Option 1: Install for a Single Project
-
-Create the skill directory:
+### Project-local (recommended for team repos)
 
 ```bash
-mkdir -p .claude/skills/express-lld-architect
+mkdir -p .claude/skills
+cp -R express-lld-architect .claude/skills/
 ```
 
-Copy the skill files:
+Your project layout after install:
 
-```bash
-cp -R claude-skills/express-typescript/express-lld-architect/* \
-.claude/skills/express-lld-architect/
 ```
-
-Project structure:
-
-```text
 my-project/
 ├── .claude/
 │   └── skills/
 │       └── express-lld-architect/
 │           ├── SKILL.md
 │           ├── README.md
-│           └── ...
+│           ├── references/
+│           │   ├── design-patterns-guide.md
+│           │   ├── solid-principles-guide.md
+│           │   ├── oops-concepts.md
+│           │   └── uml-diagrams.md
+│           └── assets/
+│               ├── express-service-template.ts
+│               └── design-patterns-examples.ts
 ├── src/
 └── package.json
 ```
 
----
-
-## Option 2: Install Globally
-
-Create the global skills directory:
+### Global (available in every project)
 
 ```bash
 mkdir -p ~/.claude/skills
+cp -R express-lld-architect ~/.claude/skills/
 ```
 
-Copy the skill:
-
-```bash
-cp -R \
-claude-skills/express-typescript/express-lld-architect \
-~/.claude/skills/
-```
-
-Result:
-
-```text
-~/.claude/
-└── skills/
-    └── express-lld-architect/
-        ├── SKILL.md
-        ├── README.md
-        └── ...
-```
-
-The skill will now be available across all Claude Code projects.
-
----
-
-# Installation from GitHub
-
-Clone the repository:
+### Install from GitHub
 
 ```bash
 git clone https://github.com/Bishwash-007/Claude-System-Architect.git
-```
+cd Claude-System-Architect
 
-Install globally:
+# Global
+cp -R express-lld-architect ~/.claude/skills/
 
-```bash
-cp -R \
-claude-skills/express-typescript/express-lld-architect \
-~/.claude/skills/
-```
-
-Or install into a specific project:
-
-```bash
-mkdir -p .claude/skills/express-lld-architect
-
-cp -R \
-claude-skills/express-typescript/express-lld-architect/* \
-.claude/skills/express-lld-architect/
+# Or project-local
+cp -R express-lld-architect path/to/my-project/.claude/skills/
 ```
 
 ---
 
-# Verifying Installation
-
-Navigate to any Claude Code project:
+## Verify the install
 
 ```bash
 cd my-project
 claude
+/skills          # lists available skills — express-lld-architect should appear
 ```
-
-List available skills:
-
-```text
-/help
-```
-
-or invoke the skill directly:
-
-```text
-/express-lld-architect
-```
-
-If installed correctly, Claude Code should recognize and load the skill.
 
 ---
 
-# Updating
+## What's inside
 
-If installed from the repository:
+```
+express-lld-architect/
+├── SKILL.md                              # Pattern tables, SOLID quick-ref, navigation
+├── README.md                             # This file
+├── references/
+│   ├── design-patterns-guide.md          # Full TypeScript examples for every pattern
+│   ├── solid-principles-guide.md         # Before/after SOLID violation examples
+│   ├── oops-concepts.md                  # OOP fundamentals (abstraction → composition)
+│   └── uml-diagrams.md                   # ASCII UML for class/sequence/state/etc.
+└── assets/
+    ├── express-service-template.ts        # Production scaffold (DI, repo, service, controller)
+    └── design-patterns-examples.ts        # Runnable pattern implementations
+```
+
+The skill follows **progressive disclosure**: Claude loads `SKILL.md` first
+(pattern selection tables, SOLID quick-ref), then reads individual reference or
+asset files only when the task requires them — keeping context lean.
+
+---
+
+## Example prompts that trigger this skill
+
+- "Design a notification service that supports email, SMS, and push"
+- "Refactor this controller — it's doing too much"
+- "I need dependency injection for my Express app"
+- "What pattern fits an order workflow with states?"
+- "Make this service testable"
+- "Draw a class diagram for my user module"
+
+---
+
+## Updating
 
 ```bash
-cd claude-skills
+cd Claude-System-Architect
 git pull
-```
 
-Reinstall the latest version:
-
-```bash
-cp -R \
-express-typescript/express-lld-architect \
-~/.claude/skills/
-```
-
-For project-local installations:
-
-```bash
-cp -R \
-express-typescript/express-lld-architect/* \
-your-project/.claude/skills/express-lld-architect/
+# Re-copy to global or project location
+cp -R express-lld-architect ~/.claude/skills/
 ```
 
 ---
 
-# Uninstalling
-
-## Global Installation
+## Uninstalling
 
 ```bash
+# Global
 rm -rf ~/.claude/skills/express-lld-architect
-```
 
-## Project Installation
-
-```bash
+# Project-local
 rm -rf .claude/skills/express-lld-architect
 ```
 
 ---
 
-# Local Development
-
-Repository structure:
-
-```text
-claude-skills/
-└── express-typescript/
-    └── express-lld-architect/
-        ├── SKILL.md
-        ├── README.md
-        ├── docs/
-        ├── templates/
-        └── examples/
-```
-
-Make changes to the skill files and reinstall if necessary.
-
-Restart Claude Code after modifying the skill:
-
-```bash
-claude
-```
-
-or start a new session.
-
----
-
-# Development Workflow
-
-Create a feature branch:
-
-```bash
-git checkout -b feature/my-change
-```
-
-Commit changes:
-
-```bash
-git add .
-git commit -m "Add improvement"
-```
-
-Push:
-
-```bash
-git push origin feature/my-change
-```
-
----
-
-# Running Examples
-
-Open Claude Code inside any project:
-
-```bash
-cd my-project
-claude
-```
-
-Run the skill:
-
-```text
-/express-lld-architect
-```
-
----
-
-# Packaging for Distribution
-
-Create a release archive:
-
-```bash
-cd express-typescript
-
-zip -r \
-express-lld-architect.zip \
-express-lld-architect
-```
-
-Verify contents:
-
-```bash
-unzip -l express-lld-architect.zip
-```
-
-Expected structure:
-
-```text
-express-lld-architect/
-├── SKILL.md
-├── README.md
-├── LICENSE
-├── docs/
-├── examples/
-└── templates/
-```
-
----
-
-# Publishing a Release
-
-Tag a version:
-
-```bash
-git tag v1.0.0
-git push origin v1.0.0
-```
-
-Create a GitHub Release and upload:
-
-```text
-express-lld-architect.zip
-```
-
-as the release artifact.
-
----
-
-# Troubleshooting
-
-## Skill Not Found
-
-Verify the directory exists:
-
-```bash
-ls ~/.claude/skills/
-```
-
-or
-
-```bash
-ls .claude/skills/
-```
-
-Ensure:
-
-```text
-SKILL.md
-```
-
-exists at the root of the installed skill directory.
-
----
-
-## Changes Not Appearing
-
-Restart Claude Code:
-
-```bash
-claude
-```
-
-or start a new session.
-
----
-
-## Invalid Skill Structure
-
-Correct:
-
-```text
-~/.claude/skills/
-└── express-lld-architect/
-    ├── SKILL.md
-    └── README.md
-```
-
-Incorrect:
-
-```text
-~/.claude/skills/
-└── express-lld-architect/
-    └── nested/
-        └── SKILL.md
-```
-
-The `SKILL.md` file must be located at the root of the installed skill directory.
-
----
-
-# License
+## License
 
 MIT
